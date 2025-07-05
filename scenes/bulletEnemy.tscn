@@ -1,0 +1,17 @@
+[gd_scene load_steps=4 format=3 uid="uid://duek7whuoq6g2"]
+
+[ext_resource type="Script" uid="uid://cr53varystcjh" path="res://scripts/bulletEnemy.gd" id="1_s77sc"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_v7oki"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_rtl8c"]
+
+[node name="bullet" type="Area3D"]
+transform = Transform3D(0.2, 0, 0, 0, -8.74228e-09, -0.2, 0, 0.2, -8.74228e-09, 0, 0, 0)
+script = ExtResource("1_s77sc")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("CapsuleMesh_v7oki")
+
+[node name="bulletCollision" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_rtl8c")
