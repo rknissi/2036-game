@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=3 uid="uid://b5pdbf7hbhbe"]
+
+[ext_resource type="Script" uid="uid://caksni4g8bb0w" path="res://pillarwall.gd" id="1_8nbj7"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wd8rq"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_wd8rq"]
+
+[node name="PillarWallArea3D" type="Area3D"]
+script = ExtResource("1_8nbj7")
+
+[node name="PillarWallCollision" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 2, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("BoxShape3D_wd8rq")
+
+[node name="PillarWallMesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 2, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("BoxMesh_wd8rq")
+skeleton = NodePath("../PillarWallCollision")
