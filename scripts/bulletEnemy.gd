@@ -1,15 +1,19 @@
 extends Area3D
 
-var bulletSpeed = 5
+var bulletSpeed = 50
 
 var accuracyY = randf_range(-0.1, 0.1)
 var accuracyX = randf_range(-0.1, 0.1)
 
-@export var weaponDamage = 10
+var weaponDamage = 50
+
 
 func _ready():
 	connect("body_entered", _on_body_entered)
 	connect("area_entered", _on_area_entered)
+
+func setDamage(dmg):
+	weaponDamage = dmg
 
 func _physics_process(delta):
 	var direction = $bulletCollision.global_transform.origin
@@ -24,7 +28,8 @@ func _physics_process(delta):
 	
 func _on_body_entered(body):
 	print("Enemy bullet entered in body")
-	body.health -= weaponDamage
+	if ("health" in body):
+		body.health -= weaponDamage
 	queue_free()
 	
 func _on_area_entered(body):

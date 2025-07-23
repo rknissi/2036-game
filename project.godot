@@ -15,6 +15,10 @@ run/main_scene="uid://cem1ue3083fhk"
 config/features=PackedStringArray("4.4", "Forward Plus")
 config/icon="res://icon.svg"
 
+[autoload]
+
+GlobalMap="*res://scripts/globalMap.gd"
+
 [input]
 
 left={

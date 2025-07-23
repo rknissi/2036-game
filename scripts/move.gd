@@ -1,119 +1,56 @@
 extends CharacterBody3D
 
-#@export var bullet : PackedScene
-
-# How fast the player moves in meters per second.
 @export var speed = 8
-# The downward acceleration when in the air, in meters per second squared.
 @export var fall_acceleration = 100
+signal game_over
 
 var movementDelay = 0.1
 var movementTimeElapsed = 0.0
-
-var target_positions = [
-	[
-		Vector3(-4.5, 0.200, -0.5),
-		Vector3(-3.5, 0.200, -0.5),
-		Vector3(-2.5, 0.200, -0.5),
-		Vector3(-1.5, 0.200, -0.5),
-		Vector3(-0.5, 0.200, -0.5)
-	],
-		[
-		Vector3(-4.5, 0.200, -1.5),
-		Vector3(-3.5, 0.200, -1.5),
-		Vector3(-2.5, 0.200, -1.5),
-		Vector3(-1.5, 0.200, -1.5),
-		Vector3(-0.5, 0.200, -1.5)
-	],
-			[
-		Vector3(-4.5, 0.200, -2.5),
-		Vector3(-3.5, 0.200, -2.5),
-		Vector3(-2.5, 0.200, -2.5),
-		Vector3(-1.5, 0.200, -2.5),
-		Vector3(-0.5, 0.200, -2.5)
-	],
-			[
-		Vector3(-4.5, 0.200, -3.5),
-		Vector3(-3.5, 0.200, -3.5),
-		Vector3(-2.5, 0.200, -3.5),
-		Vector3(-1.5, 0.200, -3.5),
-		Vector3(-0.5, 0.200, -3.5)
-	],
-			[
-		Vector3(-4.5, 0.200, -4.5),
-		Vector3(-3.5, 0.200, -4.5),
-		Vector3(-2.5, 0.200, -4.5),
-		Vector3(-1.5, 0.200, -4.5),
-		Vector3(-0.5, 0.200, -4.5)
-	],
-			[
-		Vector3(-4.5, 0.200, -5.5),
-		Vector3(-3.5, 0.200, -5.5),
-		Vector3(-2.5, 0.200, -5.5),
-		Vector3(-1.5, 0.200, -5.5),
-		Vector3(-0.5, 0.200, -5.5)
-	],
-			[
-		Vector3(-4.5, 0.200, -6.5),
-		Vector3(-3.5, 0.200, -6.5),
-		Vector3(-2.5, 0.200, -6.5),
-		Vector3(-1.5, 0.200, -6.5),
-		Vector3(-0.5, 0.200, -6.5)
-	],
-			[
-		Vector3(-4.5, 0.200, -7.5),
-		Vector3(-3.5, 0.200, -7.5),
-		Vector3(-2.5, 0.200, -7.5),
-		Vector3(-1.5, 0.200, -7.5),
-		Vector3(-0.5, 0.200, -7.5)
-	],
-			[
-		Vector3(-4.5, 0.200, -8.5),
-		Vector3(-3.5, 0.200, -8.5),
-		Vector3(-2.5, 0.200, -8.5),
-		Vector3(-1.5, 0.200, -8.5),
-		Vector3(-0.5, 0.200, -8.5)
-	],
-			[
-		Vector3(-4.5, 0.200, -9.5),
-		Vector3(-3.5, 0.200, -9.5),
-		Vector3(-2.5, 0.200, -9.5),
-		Vector3(-1.5, 0.200, -9.5),
-		Vector3(-0.5, 0.200, -9.5)
-	],
- ]
 
 var current_target_line = 0
 var current_target_column = 2
 
 var target_velocity = Vector3.ZERO
-
-var health = 20
+var id = GlobalMap.playerId
+var health = 100
 
 func _physics_process(delta):
 	
+	var oldColumn = current_target_column
+	var oldLine = current_target_line
 	if health <= 0:
-		queue_free()
+		emit_signal("game_over")
 		
 	movementTimeElapsed += delta
 	
-	if Input.is_action_pressed("right") && current_target_column < 4 && movementTimeElapsed >= movementDelay:
+	if Input.is_action_pressed("right") && current_target_column < GlobalMap.maxX && movementTimeElapsed >= movementDelay:
 		current_target_column += 1
 		movementTimeElapsed = 0.0
-	if Input.is_action_pressed("left") && current_target_column > 0 && movementTimeElapsed >= movementDelay:
+	if Input.is_action_pressed("left") && current_target_column > GlobalMap.minX && movementTimeElapsed >= movementDelay:
 		current_target_column -= 1
 		movementTimeElapsed = 0.0
-	if Input.is_action_pressed("down") && current_target_line > 0 && movementTimeElapsed >= movementDelay:
+	if Input.is_action_pressed("down") && current_target_line > GlobalMap.minZ && movementTimeElapsed >= movementDelay:
 		current_target_line -= 1
 		movementTimeElapsed = 0.0
-	if Input.is_action_pressed("up") && current_target_line < 9 && movementTimeElapsed >= movementDelay:
+	if Input.is_action_pressed("up") && current_target_line < GlobalMap.maxZ && movementTimeElapsed >= movementDelay:
 		current_target_line += 1
 		movementTimeElapsed = 0.0
 	
-	
-	if current_target_line < target_positions.size() && current_target_column < target_positions[current_target_line].size():
-		var target = target_positions[current_target_line][current_target_column]
+	if GlobalMap.movePos(id, current_target_column, current_target_line):
+		if current_target_line < GlobalMap.target_positions.size() && current_target_column < GlobalMap.target_positions[current_target_line].size():
+			var target = GlobalMap.target_positions[current_target_line][current_target_column]
+			var direction = (target - $PlayerPivot.global_transform.origin).normalized()
+			
+			velocity = direction * speed
+			move_and_slide()
+	elif velocity != Vector3.ZERO:
+		var target = GlobalMap.target_positions[oldLine][oldColumn]
 		var direction = (target - $PlayerPivot.global_transform.origin).normalized()
 		
 		velocity = direction * speed
+		current_target_column = oldColumn
+		current_target_line = oldLine
 		move_and_slide()
+	else:
+		current_target_column = oldColumn
+		current_target_line = oldLine
