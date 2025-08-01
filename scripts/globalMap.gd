@@ -1,6 +1,11 @@
 extends Node
 
 var playerId = "player"
+var enemyDefaultId = "enemy"
+var wallsDefaultId = "wall"
+
+var playerDefaultX = 0
+var playerDefaultZ = 2
 
 var occupied = {}
 
@@ -10,15 +15,15 @@ var maxX = 4
 var minZ = 0
 var maxZ = 9
 
-var minPlayerX = 0
-var maxPlayerX = 4
-var minPlayerZ = 0
+var minPlayerX = minX
+var maxPlayerX = maxX
+var minPlayerZ = minZ
 var maxPlayerZ = 4
 
-var minEnemyX = 0
-var maxEnemyX = 4
+var minEnemyX = minX
+var maxEnemyX = maxX
 var minEnemyZ = 5
-var maxEnemyZ = 9
+var maxEnemyZ = maxZ
 
 
 var target_positions = [
@@ -29,63 +34,63 @@ var target_positions = [
 		Vector3(-1.5, 0.200, -0.5),
 		Vector3(-0.5, 0.200, -0.5)
 	],
-		[
+	[
 		Vector3(-4.5, 0.200, -1.5),
 		Vector3(-3.5, 0.200, -1.5),
 		Vector3(-2.5, 0.200, -1.5),
 		Vector3(-1.5, 0.200, -1.5),
 		Vector3(-0.5, 0.200, -1.5)
 	],
-			[
+	[
 		Vector3(-4.5, 0.200, -2.5),
 		Vector3(-3.5, 0.200, -2.5),
 		Vector3(-2.5, 0.200, -2.5),
 		Vector3(-1.5, 0.200, -2.5),
 		Vector3(-0.5, 0.200, -2.5)
 	],
-			[
+	[
 		Vector3(-4.5, 0.200, -3.5),
 		Vector3(-3.5, 0.200, -3.5),
 		Vector3(-2.5, 0.200, -3.5),
 		Vector3(-1.5, 0.200, -3.5),
 		Vector3(-0.5, 0.200, -3.5)
 	],
-			[
+	[
 		Vector3(-4.5, 0.200, -4.5),
 		Vector3(-3.5, 0.200, -4.5),
 		Vector3(-2.5, 0.200, -4.5),
 		Vector3(-1.5, 0.200, -4.5),
 		Vector3(-0.5, 0.200, -4.5)
 	],
-			[
+	[
 		Vector3(-4.5, 0.200, -5.5),
 		Vector3(-3.5, 0.200, -5.5),
 		Vector3(-2.5, 0.200, -5.5),
 		Vector3(-1.5, 0.200, -5.5),
 		Vector3(-0.5, 0.200, -5.5)
 	],
-			[
+	[
 		Vector3(-4.5, 0.200, -6.5),
 		Vector3(-3.5, 0.200, -6.5),
 		Vector3(-2.5, 0.200, -6.5),
 		Vector3(-1.5, 0.200, -6.5),
 		Vector3(-0.5, 0.200, -6.5)
 	],
-			[
+	[
 		Vector3(-4.5, 0.200, -7.5),
 		Vector3(-3.5, 0.200, -7.5),
 		Vector3(-2.5, 0.200, -7.5),
 		Vector3(-1.5, 0.200, -7.5),
 		Vector3(-0.5, 0.200, -7.5)
 	],
-			[
+[
 		Vector3(-4.5, 0.200, -8.5),
 		Vector3(-3.5, 0.200, -8.5),
 		Vector3(-2.5, 0.200, -8.5),
 		Vector3(-1.5, 0.200, -8.5),
 		Vector3(-0.5, 0.200, -8.5)
 	],
-			[
+	[
 		Vector3(-4.5, 0.200, -9.5),
 		Vector3(-3.5, 0.200, -9.5),
 		Vector3(-2.5, 0.200, -9.5),
@@ -101,7 +106,7 @@ func checkPos(id, x, z):
 	if id == playerId:
 		if x >= minPlayerX and x <= maxPlayerX and z >= minPlayerZ and z <= maxPlayerZ:
 			return true
-	elif id.contains("enemy"):
+	elif id.contains(enemyDefaultId):
 		if x >= minEnemyX and x <= maxEnemyX and z >= minEnemyZ and z <= maxEnemyZ:
 			return true
 	else:

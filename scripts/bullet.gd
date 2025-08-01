@@ -5,7 +5,7 @@ var bulletSpeed = 50
 var accuracyY = randf_range(-0.1, 0.1)
 var accuracyX = randf_range(-0.1, 0.1)
 
-@export var weaponDamage = 5
+@export var weaponDamage = 30
 
 func _ready():
 	connect("body_entered", _on_body_entered)

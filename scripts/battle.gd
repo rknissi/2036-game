@@ -8,16 +8,50 @@ var enemy_scene = preload("res://scenes/enemy.tscn")
 
 var enemyMap = {}
 
+var ENEMIES_MINIMUM = 1
+var ENEMIES_MAXIMUM = 4
+var ENEMIES_CLASSES = 3
+
+var PILLARS_MINIMUM = 0
+var PILLARS_MAXIMUM = 4
+
+var SEMIWALL_MINIMUM = 0
+var SEMIWALL_MAXIMUM = 4
+
+var enemyTypeNames = ["PISTOL", "SMG", "AR"]
+var enemyTypes = {
+	"PISTOL": enemyType.new(
+		"PISTOL",
+		90,
+		30, 
+		200.0,
+		3,
+		8
+	),
+	"SMG": enemyType.new(
+		"SMG",
+		90,
+		20,
+		900.0,
+		3,
+		15
+	),"AR": enemyType.new(
+		"AR",
+		100,
+		30,
+		600.0,
+		3,
+		12
+	)}
+
 func _ready():
 	var emitter = get_node("Player")
 	emitter.connect("game_over", self._on_game_over)
 	
-	spawnEnemy(0, 4)
-	spawnEnemy(2, 5)
-	
-	spawnSemiWall(1, 4)
-	spawnSemiWall(3, 4)
-	spawnPillarWall(4, 3)
+	addPlayerPos()
+	generateEnemies()
+	generatePillars()
+	generateSemiWalls()
 	
 	call_deferred("post_ready")
 	
@@ -44,17 +78,73 @@ func _physics_process(delta):
 		shoot()
 			
 func enemyShoot(id, dmg):
-	print("Enemy shoot!")
-	var enemy = enemyMap[id]
-	var enemyBullet = enemyBulletScene.instantiate()
-	enemyBullet.setDamage(dmg)
-	enemyBullet.position = enemy.get_parent().position + Vector3(0, 0.3, 0.5)
-	add_child(enemyBullet)
+	if id in enemyMap:
+		var enemy = enemyMap[id]
+		var enemyBullet = enemyBulletScene.instantiate()
+		enemyBullet.setDamage(dmg)
+		enemyBullet.position = enemy.get_parent().position + Vector3(0, 0.3, 0.6)
+		add_child(enemyBullet)
+
+func addPlayerPos():
+	GlobalMap.movePos(GlobalMap.playerId, GlobalMap.playerDefaultX, GlobalMap.playerDefaultZ)
 	
-func spawnEnemy(x, z):
+func generatePillars():
+	var quantity = randi() % (PILLARS_MAXIMUM - PILLARS_MINIMUM + 1) + PILLARS_MINIMUM
+	
+	for i in range(quantity):
+		var validPos = false
+		var pos
+		
+		while validPos == false:
+			pos = generateRandonPos(GlobalMap.wallsDefaultId)
+			validPos = GlobalMap.checkPos(GlobalMap.wallsDefaultId, pos.x, pos.y)
+		
+		spawnPillarWall(pos.x, pos.y)
+		
+func generateSemiWalls():
+	var quantity = randi() % (SEMIWALL_MAXIMUM - SEMIWALL_MINIMUM + 1) + SEMIWALL_MINIMUM
+	
+	for i in range(quantity):
+		var validPos = false
+		var pos
+		
+		while validPos == false:
+			pos = generateRandonPos(GlobalMap.wallsDefaultId)
+			validPos = GlobalMap.checkPos(GlobalMap.wallsDefaultId, pos.x, pos.y)
+		
+		spawnSemiWall(pos.x, pos.y)
+	
+func generateEnemies():
+	var quantity = randi() % (ENEMIES_MAXIMUM - ENEMIES_MINIMUM + 1) + ENEMIES_MINIMUM
+	
+	for i in range(quantity):
+		var enemyClass = randi() % ENEMIES_CLASSES
+		var validPos = false
+		var pos
+		
+		while validPos == false:
+			pos = generateRandonPos(GlobalMap.enemyDefaultId)
+			validPos = GlobalMap.checkPos(GlobalMap.enemyDefaultId, pos.x, pos.y)
+		
+		spawnEnemy(pos.x, pos.y, enemyTypeNames[enemyClass])
+	
+func generateRandonPos(type):
+	var x = randi() % GlobalMap.maxX + 1
+	var z = 0
+	if type == GlobalMap.playerId:
+		z = randi() % GlobalMap.maxPlayerZ + 1
+	elif type == GlobalMap.enemyDefaultId:
+		z = randi() % (GlobalMap.maxEnemyZ - GlobalMap.minEnemyZ + 1) + GlobalMap.minEnemyZ
+	else:
+		z = randi() % GlobalMap.maxZ + 1
+	return Vector2(x, z)
+	
+	
+func spawnEnemy(x, z, enemyClass):
 	var new_enemy = enemy_scene.instantiate()
 	add_child(new_enemy)
 	new_enemy.get_node("Area3D").connect("enemyShoot", self.enemyShoot)
+	new_enemy.get_node("Area3D").setClass(enemyTypes[enemyClass])
 	new_enemy.global_transform.origin = global_transform.origin + GlobalMap.target_positions[z][x] + Vector3(0, 0.4, 0) 
 	GlobalMap.movePos("enemy" + str(new_enemy.get_node("Area3D").id), x, z)
 	new_enemy.scale = Vector3(0.60, 0.60, 0.60) 
