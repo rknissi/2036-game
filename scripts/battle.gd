@@ -8,14 +8,14 @@ var enemy_scene = preload("res://scenes/enemy.tscn")
 
 var enemyMap = {}
 
-var ENEMIES_MINIMUM = 1
-var ENEMIES_MAXIMUM = 4
+var ENEMIES_MINIMUM = 2
+var ENEMIES_MAXIMUM = 3
 var ENEMIES_CLASSES = 3
 
-var PILLARS_MINIMUM = 0
+var PILLARS_MINIMUM = 1
 var PILLARS_MAXIMUM = 4
 
-var SEMIWALL_MINIMUM = 0
+var SEMIWALL_MINIMUM = 2
 var SEMIWALL_MAXIMUM = 4
 
 var enemyTypeNames = ["PISTOL", "SMG", "AR"]
@@ -54,7 +54,6 @@ func _ready():
 	generateSemiWalls()
 	
 	call_deferred("post_ready")
-	
 
 func post_ready():
 	var group_members = get_tree().get_nodes_in_group("enemyGroup")
@@ -139,25 +138,35 @@ func generateRandonPos(type):
 		z = randi() % GlobalMap.maxZ + 1
 	return Vector2(x, z)
 	
+func checkVictory():
+	if enemyMap.is_empty():
+		$health.visible = false
+		$victory.visible = true
+	
 	
 func spawnEnemy(x, z, enemyClass):
 	var new_enemy = enemy_scene.instantiate()
 	add_child(new_enemy)
 	new_enemy.get_node("Area3D").connect("enemyShoot", self.enemyShoot)
+	new_enemy.get_node("Area3D").connect("checkVictory", self.checkVictory)
 	new_enemy.get_node("Area3D").setClass(enemyTypes[enemyClass])
 	new_enemy.global_transform.origin = global_transform.origin + GlobalMap.target_positions[z][x] + Vector3(0, 0.4, 0) 
 	GlobalMap.movePos("enemy" + str(new_enemy.get_node("Area3D").id), x, z)
 	new_enemy.scale = Vector3(0.60, 0.60, 0.60) 
+	new_enemy.get_node("Area3D").setPos(x, z)
 	
 func spawnSemiWall(x, z):
 	var new_child = semiwall_scene.instantiate()
 	new_child.global_transform.origin = global_transform.origin + GlobalMap.target_positions[z][x]
-	GlobalMap.movePos("semiWall" + str(new_child.id), x, z)
+	GlobalMap.movePos(GlobalMap.semiWalld + str(new_child.id), x, z)
 	add_child(new_child)
 	
 func spawnPillarWall(x, z):
 	var new_pillarWall = pillarwall_scene.instantiate()
+	new_pillarWall.connect("spawnSemiWall", self.spawnSemiWall)
 	new_pillarWall.global_transform.origin = global_transform.origin + GlobalMap.target_positions[z][x]
-	GlobalMap.movePos("pillarWall" + str(new_pillarWall.id), x, z)
+	GlobalMap.movePos(GlobalMap.pillarWallId + str(new_pillarWall.id), x, z)
 	add_child(new_pillarWall)
 	
+func _on_retry_button_pressed():
+	get_tree().change_scene_to_file("res://scenes/battle.tscn")

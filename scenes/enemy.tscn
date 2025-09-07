@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://bb4ijv4sam660"]
+[gd_scene load_steps=5 format=3 uid="uid://bb4ijv4sam660"]
 
 [ext_resource type="Script" uid="uid://bu2cx0b731p4q" path="res://scripts/enemy.gd" id="1_7p1mj"]
+[ext_resource type="Script" uid="uid://bokkdhv8myknx" path="res://scripts/enemyMovement.gd" id="1_md0e3"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_7xaro"]
 
@@ -8,6 +9,7 @@
 
 [node name="EnemyCharacterBody" type="CharacterBody3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+script = ExtResource("1_md0e3")
 
 [node name="Area3D" type="Area3D" parent="."]
 script = ExtResource("1_7p1mj")

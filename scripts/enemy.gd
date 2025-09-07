@@ -20,6 +20,7 @@ var isDelay = false
 var isInitialDelay = true
 
 signal enemyShoot(id, dmg)
+signal checkVictory
 
 func setClass(enemyTypeInst):
 	health = enemyTypeInst.health
@@ -27,13 +28,23 @@ func setClass(enemyTypeInst):
 	fireRate = enemyTypeInst.fireRate
 	burstDelay = enemyTypeInst.burstDelay
 	burstAmount = enemyTypeInst.burstAmount
-
+	
+func setPos(x, z):
+	get_parent().currentPosX = x
+	get_parent().currentPosZ = z
+	
+func setTargetPos(x, z):
+	get_parent().targetPosX = x
+	get_parent().targetPosZ = z
+	GlobalMap.movePos(id, x, z)
+	
 func _ready():
 	connect("area_entered", _on_area_entered)
 	add_to_group("enemyGroup")
 
 func _physics_process(delta):
 	time_elapsed += delta
+	
 	if isInitialDelay == true:
 		if time_elapsed > initialDelay:
 			isInitialDelay = false
@@ -58,8 +69,9 @@ func _on_area_entered(body):
 			health -= damageReceived
 		else:
 			var parent = get_parent().get_parent()
-			parent.enemyMap.erase(id)
 			GlobalMap.deletePos("enemy" + str(id))
+			parent.enemyMap.erase(id)
+			emit_signal("checkVictory")
 			queue_free()
 		
 	

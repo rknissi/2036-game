@@ -56,13 +56,24 @@ offset_right = 1153.0
 offset_bottom = 649.0
 color = Color(0.00131465, 8.22735e-07, 0.011296, 1)
 
-[node name="text" type="Label" parent="gameOver"]
-offset_right = 1152.0
-offset_bottom = 645.0
+[node name="container" type="VBoxContainer" parent="gameOver"]
+offset_left = 373.0
+offset_top = 194.0
+offset_right = 798.0
+offset_bottom = 479.0
+
+[node name="text" type="Label" parent="gameOver/container"]
+layout_mode = 2
 theme_override_font_sizes/font_size = 42
-text = "Game Over"
+text = "Game Over
+"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="retryButton" type="Button" parent="gameOver/container"]
+layout_mode = 2
+text = "Retry
+"
 
 [node name="health" type="CanvasLayer" parent="."]
 
@@ -71,3 +82,33 @@ offset_right = 1155.0
 offset_bottom = 642.0
 theme_override_font_sizes/font_size = 18
 text = "Health 100"
+
+[node name="victory" type="CanvasLayer" parent="."]
+visible = false
+
+[node name="background" type="ColorRect" parent="victory"]
+offset_right = 1153.0
+offset_bottom = 649.0
+color = Color(0.00131465, 8.22735e-07, 0.011296, 1)
+
+[node name="container" type="VBoxContainer" parent="victory"]
+offset_left = 284.0
+offset_top = 119.0
+offset_right = 925.0
+offset_bottom = 667.0
+
+[node name="text" type="Label" parent="victory/container"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 42
+text = "You won!
+"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="retryButton" type="Button" parent="victory/container"]
+layout_mode = 2
+text = "Retry
+"
+
+[connection signal="pressed" from="gameOver/container/retryButton" to="." method="_on_retry_button_pressed"]
+[connection signal="pressed" from="victory/container/retryButton" to="." method="_on_retry_button_pressed"]

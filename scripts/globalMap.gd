@@ -2,10 +2,12 @@ extends Node
 
 var playerId = "player"
 var enemyDefaultId = "enemy"
+var semiWalld = "semiWall"
+var pillarWallId = "pillarWall"
 var wallsDefaultId = "wall"
 
-var playerDefaultX = 0
-var playerDefaultZ = 2
+var playerDefaultX = 2
+var playerDefaultZ = 0
 
 var occupied = {}
 
@@ -98,6 +100,26 @@ var target_positions = [
 		Vector3(-0.5, 0.200, -9.5)
 	],
  ]
+
+func checkIfCanSeePlayer(x, z):
+	if occupied[playerId][0] != x:
+		return false
+	for key in occupied:
+		if key != playerId and !key.contains(pillarWallId):
+			if occupied[key][0] == x and z < occupied[key][1] and occupied[playerId][1] > occupied[key][1]:
+				return false
+	return true
+	
+func checkifHasType(type, x, z):
+	for key in occupied:
+		if key.contains(type) and occupied[key][0] == x and occupied[key][1] == z:
+			return true
+	return false
+	
+func getCurrentPos(id):
+	if id in occupied:
+		return Vector2(occupied[id][0], occupied[id][1])
+	return null
 
 func checkPos(id, x, z):
 	for value in occupied.values():

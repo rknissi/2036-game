@@ -27,11 +27,9 @@ func _physics_process(delta):
 	position += directionTo * bulletSpeed * delta
 	
 func _on_body_entered(body):
-	print("Enemy bullet entered in body")
 	if ("health" in body):
 		body.health -= weaponDamage
 	queue_free()
 	
 func _on_area_entered(body):
-	print("Enemy bullet entered in area")
 	queue_free()

@@ -7,8 +7,8 @@ signal game_over
 var movementDelay = 0.1
 var movementTimeElapsed = 0.0
 
-var current_target_line = GlobalMap.playerDefaultX
-var current_target_column = GlobalMap.playerDefaultZ
+var current_target_line = GlobalMap.playerDefaultZ
+var current_target_column = GlobalMap.playerDefaultX
 
 var target_velocity = Vector3.ZERO
 var id = GlobalMap.playerId
