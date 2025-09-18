@@ -150,7 +150,7 @@ func spawnEnemy(x, z, enemyClass):
 	new_enemy.get_node("Area3D").connect("enemyShoot", self.enemyShoot)
 	new_enemy.get_node("Area3D").connect("checkVictory", self.checkVictory)
 	new_enemy.get_node("Area3D").setClass(enemyTypes[enemyClass])
-	new_enemy.global_transform.origin = global_transform.origin + GlobalMap.target_positions[z][x] + Vector3(0, 0.4, 0) 
+	new_enemy.global_transform.origin = global_transform.origin + GlobalMap.target_positions[z][x] + Vector3(0, 0.5, 0) 
 	GlobalMap.movePos("enemy" + str(new_enemy.get_node("Area3D").id), x, z)
 	new_enemy.scale = Vector3(0.60, 0.60, 0.60) 
 	new_enemy.get_node("Area3D").setPos(x, z)

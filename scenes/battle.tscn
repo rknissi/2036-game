@@ -21,10 +21,13 @@ transform = Transform3D(7.5, 0, 0, 0, 5, 0, 0, 0, 12.5, -2.5, -2.5, -5)
 mesh = SubResource("BoxMesh_ip7xm")
 
 [node name="battleGlobalLight" type="DirectionalLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -0.0285672, 0.999592, 0, -0.999592, -0.0285672, 0, 2.92364, 0)
+transform = Transform3D(0.707107, -0.5, 0.5, 0, 0.707107, 0.707107, -0.707107, -0.5, 0.5, 0, 2.92364, 0)
+shadow_enabled = true
+shadow_blur = 0.05
+directional_shadow_mode = 1
 
 [node name="Player" parent="." instance=ExtResource("1_ip7xm")]
-transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, -2.5, 0.539112, -0.5)
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, -2.5, 0.5, -0.5)
 
 [node name="Marker3D" type="Marker3D" parent="Player"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.66495, -1.62292)
