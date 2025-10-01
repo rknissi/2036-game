@@ -5,6 +5,8 @@ var enemyDefaultId = "enemy"
 var semiWalld = "semiWall"
 var pillarWallId = "pillarWall"
 var wallsDefaultId = "wall"
+var debrisBigId = "debrisBig"
+var debrisSmallId = "debrisSmall"
 
 var playerDefaultX = 2
 var playerDefaultZ = 0
@@ -131,8 +133,10 @@ func checkPos(id, x, z):
 	elif id.contains(enemyDefaultId):
 		if x >= minEnemyX and x <= maxEnemyX and z >= minEnemyZ and z <= maxEnemyZ:
 			return true
-	else:
+	elif x >= minX and x <= maxX and z >= minZ and z <= maxZ:
 		return true
+	else:
+		return false
 	
 func movePos(id, x, z):
 	if checkPos(id, x, z):

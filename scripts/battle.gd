@@ -1,24 +1,14 @@
 extends StaticBody3D
 
 var bullet = preload("res://scenes/bullet.tscn")
+var grenade = preload("res://scenes/grenade.tscn")
 var enemyBulletScene = preload("res://scenes/bulletEnemy.tscn")
 var semiwall_scene = preload("res://scenes/semiwall.tscn")  # Replace with your actual scene path
 var pillarwall_scene = preload("res://scenes/pillarwall.tscn")  # Replace with your actual scene path
 var enemy_scene = preload("res://scenes/enemy.tscn")
+var debrisBig_scene = preload("res://scenes/debrisBig.tscn")
+var debrisSmall_scene = preload("res://scenes/debrisSmall.tscn")
 
-var enemyMap = {}
-
-var ENEMIES_MINIMUM = 2
-var ENEMIES_MAXIMUM = 3
-var ENEMIES_CLASSES = 3
-
-var PILLARS_MINIMUM = 1
-var PILLARS_MAXIMUM = 4
-
-var SEMIWALL_MINIMUM = 2
-var SEMIWALL_MAXIMUM = 4
-
-var enemyTypeNames = ["PISTOL", "SMG", "AR"]
 var enemyTypes = {
 	"PISTOL": enemyType.new(
 		"PISTOL",
@@ -42,11 +32,35 @@ var enemyTypes = {
 		600.0,
 		3,
 		12
+	),"MINIGUN": enemyType.new(
+		"MINIGUN",
+		300,
+		34,
+		900.0,
+		2,
+		100
 	)}
+
+var enemyTypeNames = enemyTypes.values().map(func(i): return i["name"])
+
+var enemyMap = {}
+
+var ENEMIES_MINIMUM = 2
+var ENEMIES_MAXIMUM = 3
+var ENEMIES_CLASSES = enemyTypeNames.size()
+
+var PILLARS_MINIMUM = 1
+var PILLARS_MAXIMUM = 4
+
+var SEMIWALL_MINIMUM = 2
+var SEMIWALL_MAXIMUM = 4
+
 
 func _ready():
 	var emitter = get_node("Player")
 	emitter.connect("game_over", self._on_game_over)
+	emitter.connect("shoot", self.shoot)
+	emitter.connect("grenade_throw", self.grenadeThrow)
 	
 	addPlayerPos()
 	generateEnemies()
@@ -66,15 +80,18 @@ func shoot():
 	b.position = $Player.position + Vector3(0, 0.3, -0.5)
 	add_child(b)
 	
+func grenadeThrow():
+	var g = grenade.instantiate()
+	g.position = $Player.position + Vector3(0, 0.3, -0.5)
+	g.initialZ = g.position.z
+	add_child(g)
+	
 func _on_game_over():
 	$health.visible = false
 	$gameOver.visible = true
 
 func _physics_process(delta):
 	$health/text.text = "Health: " + str($Player.health)
-	
-	if Input.is_action_just_pressed("shoot"):
-		shoot()
 			
 func enemyShoot(id, dmg):
 	if id in enemyMap:
@@ -155,6 +172,17 @@ func spawnEnemy(x, z, enemyClass):
 	new_enemy.scale = Vector3(0.60, 0.60, 0.60) 
 	new_enemy.get_node("Area3D").setPos(x, z)
 	
+func spawnDebrisBig(x, z):
+	var new_child = debrisBig_scene.instantiate()
+	new_child.global_transform.origin = global_transform.origin + GlobalMap.target_positions[z][x]
+	GlobalMap.movePos(GlobalMap.debrisBigId + str(new_child.id), x, z)
+	add_child(new_child)
+	
+func spawnDebrisSmall(x, z):
+	var new_child = debrisSmall_scene.instantiate()
+	new_child.global_transform.origin = global_transform.origin + GlobalMap.target_positions[z][x]
+	add_child(new_child)
+	
 func spawnSemiWall(x, z):
 	var new_child = semiwall_scene.instantiate()
 	new_child.global_transform.origin = global_transform.origin + GlobalMap.target_positions[z][x]
@@ -164,6 +192,8 @@ func spawnSemiWall(x, z):
 func spawnPillarWall(x, z):
 	var new_pillarWall = pillarwall_scene.instantiate()
 	new_pillarWall.connect("spawnSemiWall", self.spawnSemiWall)
+	new_pillarWall.connect("spawnDebrisBig", self.spawnDebrisBig)
+	new_pillarWall.connect("spawnDebrisSmall", self.spawnDebrisSmall)
 	new_pillarWall.global_transform.origin = global_transform.origin + GlobalMap.target_positions[z][x]
 	GlobalMap.movePos(GlobalMap.pillarWallId + str(new_pillarWall.id), x, z)
 	add_child(new_pillarWall)

@@ -1,6 +1,6 @@
 extends Area3D
 
-var wallMaxHealth = 100
+var wallMaxHealth = 150
 var wallCurrenthealth = wallMaxHealth
 var id = randi_range(0, 1000)
 

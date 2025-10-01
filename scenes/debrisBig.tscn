@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=3 uid="uid://dmll1e2cuckbj"]
+
+[ext_resource type="Script" uid="uid://bprj3hba3ftq4" path="res://scripts/debrisBig.gd" id="1_jla05"]
+[ext_resource type="ArrayMesh" uid="uid://bgdlcfkurvrcn" path="res://models/debrisBig.obj" id="2_jla05"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wd8rq"]
+
+[node name="debrisBigArea3D" type="Area3D"]
+script = ExtResource("1_jla05")
+
+[node name="debrisBigCollision" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.5, 0, 0, 0, 1, 0, 0.25, 0)
+shape = SubResource("BoxShape3D_wd8rq")
+
+[node name="debrisBigMesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
+mesh = ExtResource("2_jla05")
+skeleton = NodePath("../debrisBigCollision")

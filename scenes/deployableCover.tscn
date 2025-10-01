@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://cfpgkrnnwcqkh"]
+
+[ext_resource type="ArrayMesh" uid="uid://calqlc5x6g44b" path="res://models/debrisSmall.obj" id="1_vh8up"]
+
+[node name="debrisSmallArea3D" type="Area3D"]
+
+[node name="debrisSmallMesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
+mesh = ExtResource("1_vh8up")
+skeleton = NodePath("")

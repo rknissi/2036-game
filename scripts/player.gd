@@ -3,6 +3,8 @@ extends CharacterBody3D
 @export var speed = 8
 @export var fall_acceleration = 100
 signal game_over
+signal shoot
+signal grenade_throw
 
 var movementDelay = 0.1
 var movementTimeElapsed = 0.0
@@ -13,6 +15,9 @@ var current_target_column = GlobalMap.playerDefaultX
 var target_velocity = Vector3.ZERO
 var id = GlobalMap.playerId
 var health = 100
+var grenadeCount = 2
+
+var curEquips = []
 
 func _physics_process(delta):
 	
@@ -54,3 +59,11 @@ func _physics_process(delta):
 	else:
 		current_target_column = oldColumn
 		current_target_line = oldLine
+		
+	if Input.is_action_just_pressed("shoot"):
+		emit_signal("shoot")
+		
+	if Input.is_action_just_pressed("grenade") and grenadeCount > 0:
+		grenadeCount -= 1
+		emit_signal("grenade_throw")
+	
