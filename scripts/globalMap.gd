@@ -3,6 +3,7 @@ extends Node
 var playerId = "player"
 var enemyDefaultId = "enemy"
 var semiWalld = "semiWall"
+var deployableCoverId = "deployableCover"
 var pillarWallId = "pillarWall"
 var wallsDefaultId = "wall"
 var debrisBigId = "debrisBig"
@@ -102,6 +103,9 @@ var target_positions = [
 		Vector3(-0.5, 0.050, -9.5)
 	],
  ]
+
+func clearEverything():
+	occupied.clear()
 
 func checkIfCanSeePlayer(x, z):
 	if occupied[playerId][0] != x:

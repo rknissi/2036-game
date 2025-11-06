@@ -1,10 +1,18 @@
-[gd_scene load_steps=2 format=3 uid="uid://cfpgkrnnwcqkh"]
+[gd_scene load_steps=4 format=3 uid="uid://cfpgkrnnwcqkh"]
 
-[ext_resource type="ArrayMesh" uid="uid://calqlc5x6g44b" path="res://models/debrisSmall.obj" id="1_vh8up"]
+[ext_resource type="Script" uid="uid://bi4qr4jb5jfjd" path="res://scripts/deployableCover.gd" id="1_u5uju"]
+[ext_resource type="ArrayMesh" uid="uid://qjxxl0necjj" path="res://models/deployableCover.obj" id="2_u5uju"]
 
-[node name="debrisSmallArea3D" type="Area3D"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_wd8rq"]
 
-[node name="debrisSmallMesh" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0)
-mesh = ExtResource("1_vh8up")
-skeleton = NodePath("")
+[node name="deployableCoverArea3D" type="Area3D"]
+script = ExtResource("1_u5uju")
+
+[node name="deployableCoverCollision" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.5, 0, 0, 0, 1, 0, 0.25, 0)
+shape = SubResource("BoxShape3D_wd8rq")
+
+[node name="deployableCoverMesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 0, 0.25, 0)
+mesh = ExtResource("2_u5uju")
+skeleton = NodePath("../deployableCoverCollision")

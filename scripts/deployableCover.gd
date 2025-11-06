@@ -1,10 +1,8 @@
 extends Area3D
 
-var wallMaxHealth = 150
+var wallMaxHealth = 1000
 var wallCurrenthealth = wallMaxHealth
 var id = randi_range(0, 1000)
-
-signal spawnDebrisSmall
 
 func _ready():
 	connect("area_entered", _on_area_entered)
@@ -15,8 +13,5 @@ func _on_area_entered(body):
 		if (wallCurrenthealth > damageReceived):
 			wallCurrenthealth -= damageReceived
 		else:
-			var currentPos = GlobalMap.getCurrentPos(GlobalMap.semiWalld + str(id))
-			emit_signal("spawnDebrisSmall", currentPos.x, currentPos.y)
-			GlobalMap.deletePos(GlobalMap.semiWalld + str(id))
-			
+			GlobalMap.deletePos(GlobalMap.deployableCoverId + str(id))
 			queue_free()

@@ -5,6 +5,7 @@ extends CharacterBody3D
 signal game_over
 signal shoot
 signal grenade_throw
+signal deploy_cover(x, y)
 
 var movementDelay = 0.1
 var movementTimeElapsed = 0.0
@@ -14,10 +15,18 @@ var current_target_column = GlobalMap.playerDefaultX
 
 var target_velocity = Vector3.ZERO
 var id = GlobalMap.playerId
-var health = 100
+
+var maxHealth = 100
+var health = maxHealth
+
 var grenadeCount = 2
 
-var curEquips = []
+var curEquips = ["grenade", "healthKit", "deployableCover"]
+
+func useHealthKit(healAmount = 30):
+	health += healAmount
+	if health > maxHealth:
+		health = maxHealth
 
 func _physics_process(delta):
 	
@@ -66,4 +75,16 @@ func _physics_process(delta):
 	if Input.is_action_just_pressed("grenade") and grenadeCount > 0:
 		grenadeCount -= 1
 		emit_signal("grenade_throw")
-	
+		
+	if Input.is_action_just_pressed("useEquip"):
+		if curEquips.size() > 0:
+			if curEquips[0] == "grenade":
+				emit_signal("grenade_throw")
+			if curEquips[0] == "healthKit":
+				useHealthKit()
+			if curEquips[0] == "deployableCover":
+				var curPos = GlobalMap.getCurrentPos(GlobalMap.playerId)
+				if GlobalMap.checkPos(GlobalMap.deployableCoverId, curPos.x, curPos.y + 1):
+					emit_signal("deploy_cover", curPos.x, curPos.y + 1)
+			curEquips = curEquips.slice(1, curEquips.size())
+			

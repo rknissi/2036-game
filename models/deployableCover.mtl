@@ -1,10 +1,10 @@
-# Blender 4.5.3 LTS MTL File: 'pillarWall.blend'
+# Blender 4.5.3 LTS MTL File: 'deployableCover.blend'
 # www.blender.org
 
 newmtl Material
 Ns 250.000000
 Ka 0.636842 0.636842 0.636842
-Kd 0.026393 0.471985 0.800339
+Kd 0.800393 0.181186 0.003150
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.450000

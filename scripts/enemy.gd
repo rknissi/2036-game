@@ -28,6 +28,7 @@ func setClass(enemyTypeInst):
 	fireRate = enemyTypeInst.fireRate
 	burstDelay = enemyTypeInst.burstDelay
 	burstAmount = enemyTypeInst.burstAmount
+	$EnemyHealth.text = str(health)
 	
 func setPos(x, z):
 	get_parent().currentPosX = x
@@ -67,6 +68,7 @@ func _on_area_entered(body):
 		var damageReceived = body.weaponDamage
 		if (health > damageReceived):
 			health -= damageReceived
+			$EnemyHealth.text = str(health)
 		else:
 			var parent = get_parent().get_parent()
 			GlobalMap.deletePos("enemy" + str(id))

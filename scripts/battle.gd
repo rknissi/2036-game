@@ -8,6 +8,7 @@ var pillarwall_scene = preload("res://scenes/pillarwall.tscn")  # Replace with y
 var enemy_scene = preload("res://scenes/enemy.tscn")
 var debrisBig_scene = preload("res://scenes/debrisBig.tscn")
 var debrisSmall_scene = preload("res://scenes/debrisSmall.tscn")
+var deployableCover_scene = preload("res://scenes/deployableCover.tscn")
 
 var enemyTypes = {
 	"PISTOL": enemyType.new(
@@ -61,6 +62,7 @@ func _ready():
 	emitter.connect("game_over", self._on_game_over)
 	emitter.connect("shoot", self.shoot)
 	emitter.connect("grenade_throw", self.grenadeThrow)
+	emitter.connect("deploy_cover", self.spawnDeployableCover)
 	
 	addPlayerPos()
 	generateEnemies()
@@ -89,6 +91,8 @@ func grenadeThrow():
 func _on_game_over():
 	$health.visible = false
 	$gameOver.visible = true
+	GlobalMap.clearEverything()
+	enemyMap.clear()
 
 func _physics_process(delta):
 	$health/text.text = "Health: " + str($Player.health)
@@ -159,6 +163,7 @@ func checkVictory():
 	if enemyMap.is_empty():
 		$health.visible = false
 		$victory.visible = true
+		GlobalMap.clearEverything()
 	
 	
 func spawnEnemy(x, z, enemyClass):
@@ -186,7 +191,14 @@ func spawnDebrisSmall(x, z):
 func spawnSemiWall(x, z):
 	var new_child = semiwall_scene.instantiate()
 	new_child.global_transform.origin = global_transform.origin + GlobalMap.target_positions[z][x]
+	new_child.connect("spawnDebrisSmall", self.spawnDebrisSmall)
 	GlobalMap.movePos(GlobalMap.semiWalld + str(new_child.id), x, z)
+	add_child(new_child)
+	
+func spawnDeployableCover(x, z):
+	var new_child = deployableCover_scene.instantiate()
+	new_child.global_transform.origin = global_transform.origin + GlobalMap.target_positions[z][x]
+	GlobalMap.movePos(GlobalMap.deployableCoverId + str(new_child.id), x, z)
 	add_child(new_child)
 	
 func spawnPillarWall(x, z):
